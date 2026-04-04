@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrast False Positive Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 { margin-top: 2rem; }
+
+        /* =============================================
+           APPROACH 1: Pseudo-element background
+           The red comes from a ::before pseudo-element
+           that is absolutely positioned behind the content.
+           The actual element has no background-color.
+           ============================================= */
+        .test-pseudo {
+            position: relative;
+            padding: 3rem 2rem;
+            color: #FFFFFF;
+            text-align: center;
+            overflow: hidden;
+        }
+        .test-pseudo::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: #CC0000;
+            z-index: -1;
+        }
+        .test-pseudo h2,
+        .test-pseudo p,
+        .test-pseudo a {
+            position: relative;
+            z-index: 1;
+            color: #FFFFFF;
+        }
+        .test-pseudo a { font-weight: 700; text-decoration: underline; }
+
+        /* =============================================
+           APPROACH 2: Background via inline SVG data URI
+           ============================================= */
+        .test-svg-bg {
+            padding: 3rem 2rem;
+            color: #FFFFFF;
+            text-align: center;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%23CC0000' width='1' height='1'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+        .test-svg-bg h2,
+        .test-svg-bg p,
+        .test-svg-bg a {
+            color: #FFFFFF;
+        }
+        .test-svg-bg a { font-weight: 700; text-decoration: underline; }
+
+        /* =============================================
+           APPROACH 3: Sibling overlay with z-index
+           A separate div provides the red background,
+           content sits on top via z-index.
+           ============================================= */
+        .test-overlay-wrapper {
+            position: relative;
+        }
+        .test-overlay-bg {
+            position: absolute;
+            inset: 0;
+            background-color: #CC0000;
+            z-index: 0;
+        }
+        .test-overlay-content {
+            position: relative;
+            z-index: 1;
+            padding: 3rem 2rem;
+            color: #FFFFFF;
+            text-align: center;
+        }
+        .test-overlay-content h2,
+        .test-overlay-content p,
+        .test-overlay-content a {
+            color: #FFFFFF;
+        }
+        .test-overlay-content a { font-weight: 700; text-decoration: underline; }
+
+        /* =============================================
+           APPROACH 4: Background-color on a wrapper,
+           text element has background-color: transparent
+           ============================================= */
+        .test-transparent {
+            background-color: #CC0000;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .test-transparent-inner {
+            background-color: transparent;
+            color: #FFFFFF;
+        }
+        .test-transparent-inner h2,
+        .test-transparent-inner p,
+        .test-transparent-inner a {
+            color: #FFFFFF;
+            background-color: transparent;
+        }
+        .test-transparent-inner a { font-weight: 700; text-decoration: underline; }
+
+        /* =============================================
+           APPROACH 5: Mix-blend-mode trick
+           ============================================= */
+        .test-blend-wrapper {
+            position: relative;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: #CC0000;
+            isolation: isolate;
+        }
+        .test-blend-layer {
+            position: absolute;
+            inset: 0;
+            background: #CC0000;
+            mix-blend-mode: multiply;
+            z-index: 0;
+        }
+        .test-blend-content {
+            position: relative;
+            z-index: 1;
+            color: #FFFFFF;
+        }
+        .test-blend-content a { font-weight: 700; text-decoration: underline; color: #FFFFFF; }
+
+        /* =============================================
+           APPROACH 6: CSS custom property with fallback
+           chain that might confuse computed style
+           ============================================= */
+        .test-var {
+            --section-bg: #CC0000;
+            --fallback-bg: var(--section-bg);
+            background-color: var(--fallback-bg);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #FFFFFF;
+        }
+        .test-var h2,
+        .test-var p,
+        .test-var a {
+            color: #FFFFFF;
+        }
+        .test-var a { font-weight: 700; text-decoration: underline; }
+
+        /* =============================================
+           APPROACH 7: Background on parent, explicit
+           background-color: initial on the text elements
+           ============================================= */
+        .test-initial-wrapper {
+            background-color: #CC0000;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .test-initial-wrapper h2,
+        .test-initial-wrapper p,
+        .test-initial-wrapper a {
+            color: #FFFFFF;
+            background-color: initial;
+        }
+        .test-initial-wrapper a { font-weight: 700; text-decoration: underline; }
+
+
+        .label {
+            background: #333;
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.85rem;
+            font-family: monospace;
+            display: inline-block;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<p class="label">APPROACH 1: Pseudo-element ::before background</p>
+<section class="test-pseudo">
+    <h2>Get Involved Today</h2>
+    <p>Have questions or want to learn more about joining the Horizon Student Alliance? We'd love to hear from you.</p>
+    <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
+</section>
+
+<p class="label">APPROACH 2: SVG data URI background-image</p>
+<section class="test-svg-bg">
+    <h2>Get Involved Today</h2>
+    <p>Have questions or want to learn more about joining the Horizon Student Alliance? We'd love to hear from you.</p>
+    <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
+</section>
+
+<p class="label">APPROACH 3: Sibling overlay div</p>
+<section class="test-overlay-wrapper">
+    <div class="test-overlay-bg"></div>
+    <div class="test-overlay-content">
+        <h2>Get Involved Today</h2>
+        <p>Have questions or want to learn more about joining the Horizon Student Alliance? We'd love to hear from you.</p>
+        <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
+    </div>
+</section>
+
+<p class="label">APPROACH 4: Wrapper bg + transparent children</p>
+<section class="test-transparent">
+    <div class="test-transparent-inner">
+        <h2>Get Involved Today</h2>
+        <p>Have questions or want to learn more about joining the Horizon Student Alliance? We'd love to hear from you.</p>
+        <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
+    </div>
+</section>
+
+<p class="label">APPROACH 5: Mix-blend-mode</p>
+<section class="test-blend-wrapper">
+    <div class="test-blend-layer"></div>
+    <div class="test-blend-content">
+        <h2>Get Involved Today</h2>
+        <p>Have questions or want to learn more about joining the Horizon Student Alliance? We'd love to hear from you.</p>
+        <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
+    </div>
+</section>
+
+<p class="label">APPROACH 6: CSS custom property chain</p>
+<section class="test-var">
+    <h2>Get Involved Today</h2>
+    <p>Have questions or want to learn more about joining the Horizon Student Alliance? We'd love to hear from you.</p>
+    <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
+</section>
+
+<p class="label">APPROACH 7: Parent bg + background-color: initial on children</p>
+<section class="test-initial-wrapper">
+    <h2>Get Involved Today</h2>
+    <p>Have questions or want to learn more about joining the Horizon Student Alliance? We'd love to hear from you.</p>
+    <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
+</section>
+
+</body>
+</html>
