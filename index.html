@@ -299,6 +299,12 @@
             margin-top: auto;
         }
 
+        /* --- OPTION B (tab order mismatch via flex order) --- */
+        .resource-item:nth-child(1) { order: 2; }
+        .resource-item:nth-child(2) { order: 4; }
+        .resource-item:nth-child(3) { order: 3; }
+        .resource-item:nth-child(4) { order: 1; }
+
         /* --- NEWSLETTER SIGNUP --- */
         .newsletter {
             background: #f5f5f5;
@@ -476,10 +482,10 @@
                 <div class="logo-icon">H</div>
                 <span>Horizon Student Alliance</span>
             </div>
-            <nav>
+            <nav aria-label="Navigation">
                 <ul>
                     <li><a href="#events">Events</a></li>
-                    <li><a href="#about">About</a></li>
+                    <li><a href="#about" tabindex="-1">About</a></li>
                     <li><a href="#resources">Resources</a></li>
                 </ul>
             </nav>
@@ -602,10 +608,8 @@
                     }
                 ">Subscribe</button>
             </div>
-            <span id="newsletter-error" style="display:none; color:#c0392b; font-size:0.875rem; margin-top:0.4rem;">Please enter a valid email address.</span>
+            <span id="newsletter-error" style="display:none; color:#c0392b; font-size:0.875rem; margin-top:0.4rem;">Invalid input</span>
         </section>
-
-    </main>
 
     <section class="contact-cta">
         <div class="contact-cta-inner">
@@ -614,6 +618,8 @@
             <a href="mailto:horizonsa@university.edu">horizonsa@university.edu</a>
         </div>
     </section>
+
+    </main>
 
     <footer>
         <div class="social-links">
